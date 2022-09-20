@@ -12,8 +12,8 @@ func UniqueCopy(dst, src []string) int {
 		return 0
 	}
 
-	uniqueness := structs.Get().(map[string]struct{})
-	defer structs.Put(uniqueness)
+	uniqueness := pool.Get().(map[string]struct{})
+	defer pool.Put(uniqueness)
 
 	for number := range uniqueness {
 		delete(uniqueness, number)
@@ -38,4 +38,4 @@ func UniqueCopy(dst, src []string) int {
 	return n
 }
 
-var structs = sync.Pool{New: func() interface{} { return make(map[string]struct{}) }}
+var pool = sync.Pool{New: func() interface{} { return make(map[string]struct{}) }}
