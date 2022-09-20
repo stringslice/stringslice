@@ -111,7 +111,7 @@ func TestUniqueCopy(t *testing.T) {
 	}
 }
 
-func BenchmarkKebab(b *testing.B) {
+func BenchmarkUniqueCopy(b *testing.B) {
 	b.ReportAllocs()
 
 	keep := uniqueCopyTests[:0]

@@ -19,7 +19,7 @@ goos: linux
 goarch: amd64
 pkg: github.com/pfmt/stringslice
 cpu: 11th Gen Intel(R) Core(TM) i7-1165G7 @ 2.80GHz
-BenchmarkKebab/slice_test.go:30-8             608862          1986 ns/op
+BenchmarkUniqueCopy/slice_test.go:30-8         	  555273	      1970 ns/op
 PASS
-ok      github.com/pfmt/stringslice 2.240s
+ok  	github.com/pfmt/stringslice	1.142s
 ```
