@@ -6,7 +6,7 @@ package stringslice
 
 import "sync"
 
-// UniqueCopy fills the destination array with strings from the source array, preserving order.
+// UniqueCopy fills the destination array with unique strings from the source array, preserving order.
 func UniqueCopy(dst, src []string) int {
 	if len(dst) == 0 || len(src) == 0 {
 		return 0
@@ -15,8 +15,8 @@ func UniqueCopy(dst, src []string) int {
 	uniqueness := pool.Get().(map[string]struct{})
 	defer pool.Put(uniqueness)
 
-	for number := range uniqueness {
-		delete(uniqueness, number)
+	for str := range uniqueness {
+		delete(uniqueness, str)
 	}
 
 	var n int

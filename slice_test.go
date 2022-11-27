@@ -16,7 +16,7 @@ import (
 )
 
 var uniqueCopyTests = []struct {
-	name  string
+	test  string
 	line  string
 	src   []string
 	dst   []string
@@ -26,44 +26,38 @@ var uniqueCopyTests = []struct {
 	keep  bool
 }{
 	{
-		name:  "non unique",
+		test:  "non unique",
 		line:  testline(),
-		src:   []string{"foo", "bar", "foo", "baz", "foo", "qux", "foo", "quux", "foo", "garply", "foo", "waldo", "foo", "fred", "foo", "plugh", "foo", "xyzzy", "foo", "thud"},
+		src:   []string{"foo", "foo", "foo", "foo", "foo", "foo", "foo", "foo", "foo", "foo", "foo"},
 		dst:   []string{"", "", "", "", "", "", "", "", "", "", ""},
-		want:  []string{"foo", "bar", "baz", "qux", "quux", "garply", "waldo", "fred", "plugh", "xyzzy", "thud"},
+		want:  []string{"foo"},
 		bench: true,
 	}, {
-		name: "already unique",
+		test: "already unique",
 		line: testline(),
 		src:  []string{"foo", "bar", "baz", "qux", "quux", "garply", "waldo", "fred", "plugh", "xyzzy", "thud"},
 		dst:  []string{"", "", "", "", "", "", "", "", "", "", ""},
 		want: []string{"foo", "bar", "baz", "qux", "quux", "garply", "waldo", "fred", "plugh", "xyzzy", "thud"},
 	}, {
-		name: "non unique",
-		line: testline(),
-		src:  []string{"foo", "foo", "foo", "foo", "foo", "foo", "foo", "foo", "foo", "foo", "foo"},
-		dst:  []string{"", "", "", "", "", "", "", "", "", "", ""},
-		want: []string{"foo"},
-	}, {
-		name: "without destination",
+		test: "without destination",
 		line: testline(),
 		src:  []string{"foo", "bar", "baz", "qux", "quux", "garply", "waldo", "fred", "plugh", "xyzzy", "thud"},
 		dst:  nil,
 		want: nil,
 	}, {
-		name: "empty destination",
+		test: "empty destination",
 		line: testline(),
 		src:  []string{"foo", "bar", "baz", "qux", "quux", "garply", "waldo", "fred", "plugh", "xyzzy", "thud"},
 		dst:  []string{},
 		want: []string{},
 	}, {
-		name: "short destination",
+		test: "short destination",
 		line: testline(),
 		src:  []string{"foo", "bar", "baz", "qux", "quux", "garply", "waldo", "fred", "plugh", "xyzzy", "thud"},
 		dst:  []string{"", ""},
 		want: []string{"foo", "bar"},
 	}, {
-		name: "very short destination",
+		test: "very short destination",
 		line: testline(),
 		src:  []string{"foo", "bar", "baz", "qux", "quux", "garply", "waldo", "fred", "plugh", "xyzzy", "thud"},
 		dst:  []string{""},
@@ -72,8 +66,11 @@ var uniqueCopyTests = []struct {
 }
 
 func TestUniqueCopy(t *testing.T) {
+	t.Parallel()
+
 	keep := uniqueCopyTests[:0]
 	skip := uniqueCopyTests[:0]
+
 	for _, tt := range uniqueCopyTests {
 		if tt.keep {
 			keep = append(keep, tt)
@@ -84,21 +81,22 @@ func TestUniqueCopy(t *testing.T) {
 
 	if len(keep) == 0 {
 		keep = uniqueCopyTests
+
 	} else {
 		for _, tt := range skip {
-			t.Logf("%s/unkeep: %s", tt.line, tt.name)
+			t.Logf("%s/unkeep: %s", tt.line, tt.test)
 		}
 	}
 
 	for _, tt := range keep {
 		if tt.skip {
-			t.Logf("%s/skip: %s", tt.line, tt.name)
+			t.Logf("%s/skip: %s", tt.line, tt.test)
 			continue
 		}
 
 		tt := tt
 
-		t.Run(tt.line+"/"+tt.name, func(t *testing.T) {
+		t.Run(tt.line+"/"+tt.test, func(t *testing.T) {
 			t.Parallel()
 
 			n := stringslice.UniqueCopy(tt.dst, tt.src)
@@ -128,13 +126,13 @@ func BenchmarkUniqueCopy(b *testing.B) {
 		keep = uniqueCopyTests
 	} else {
 		for _, tt := range skip {
-			b.Logf("%s/unkeep: %s", tt.line, tt.name)
+			b.Logf("%s/unkeep: %s", tt.line, tt.test)
 		}
 	}
 
 	for _, tt := range keep {
 		if tt.skip {
-			b.Logf("%s/skip: %s", tt.line, tt.name)
+			b.Logf("%s/skip: %s", tt.line, tt.test)
 			continue
 		}
 
@@ -151,6 +149,8 @@ func BenchmarkUniqueCopy(b *testing.B) {
 }
 
 func TestUniqueCopyToSelf(t *testing.T) {
+	t.Parallel()
+
 	src := []string{"foo", "bar", "foo", "baz", "foo", "qux", "foo", "quux", "foo", "garply", "foo", "waldo", "foo", "fred", "foo", "plugh", "foo", "xyzzy", "foo", "thud"}
 	want := []string{"foo", "bar", "baz", "qux", "quux", "garply", "waldo", "fred", "plugh", "xyzzy", "thud"}
 
