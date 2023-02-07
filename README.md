@@ -3,7 +3,7 @@
 [![Build Status](https://cloud.drone.io/api/badges/pfmt/stringslice/status.svg)](https://cloud.drone.io/pfmt/stringslice)
 [![Go Reference](https://pkg.go.dev/badge/github.com/pfmt/stringslice.svg)](https://pkg.go.dev/github.com/pfmt/stringslice)
 
-String slice utils for Go.  
+Copying of unique strings to slice for Go.  
 Source files are distributed under the BSD-style license.
 
 ## About

@@ -1,7 +1,8 @@
-// Copyright 2022 The Go Authors. All rights reserved.
+// Copyright 2023 The Go Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+// Package stringslice copying of unique strings to slice for Go.
 package stringslice
 
 import "sync"

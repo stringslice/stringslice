@@ -1,4 +1,4 @@
-// Copyright 2022 The Go Authors. All rights reserved.
+// Copyright 2023 The Go Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
@@ -16,7 +16,7 @@ import (
 )
 
 var uniqueCopyTests = []struct {
-	test  string
+	name  string
 	line  string
 	src   []string
 	dst   []string
@@ -26,38 +26,38 @@ var uniqueCopyTests = []struct {
 	keep  bool
 }{
 	{
-		test:  "non unique",
+		name:  "non unique",
 		line:  testline(),
 		src:   []string{"foo", "foo", "foo", "foo", "foo", "foo", "foo", "foo", "foo", "foo", "foo"},
 		dst:   []string{"", "", "", "", "", "", "", "", "", "", ""},
 		want:  []string{"foo"},
 		bench: true,
 	}, {
-		test: "already unique",
+		name: "already unique",
 		line: testline(),
 		src:  []string{"foo", "bar", "baz", "qux", "quux", "garply", "waldo", "fred", "plugh", "xyzzy", "thud"},
 		dst:  []string{"", "", "", "", "", "", "", "", "", "", ""},
 		want: []string{"foo", "bar", "baz", "qux", "quux", "garply", "waldo", "fred", "plugh", "xyzzy", "thud"},
 	}, {
-		test: "without destination",
+		name: "without destination",
 		line: testline(),
 		src:  []string{"foo", "bar", "baz", "qux", "quux", "garply", "waldo", "fred", "plugh", "xyzzy", "thud"},
 		dst:  nil,
 		want: nil,
 	}, {
-		test: "empty destination",
+		name: "empty destination",
 		line: testline(),
 		src:  []string{"foo", "bar", "baz", "qux", "quux", "garply", "waldo", "fred", "plugh", "xyzzy", "thud"},
 		dst:  []string{},
 		want: []string{},
 	}, {
-		test: "short destination",
+		name: "short destination",
 		line: testline(),
 		src:  []string{"foo", "bar", "baz", "qux", "quux", "garply", "waldo", "fred", "plugh", "xyzzy", "thud"},
 		dst:  []string{"", ""},
 		want: []string{"foo", "bar"},
 	}, {
-		test: "very short destination",
+		name: "very short destination",
 		line: testline(),
 		src:  []string{"foo", "bar", "baz", "qux", "quux", "garply", "waldo", "fred", "plugh", "xyzzy", "thud"},
 		dst:  []string{""},
@@ -68,8 +68,8 @@ var uniqueCopyTests = []struct {
 func TestUniqueCopy(t *testing.T) {
 	t.Parallel()
 
-	keep := uniqueCopyTests[:0]
-	skip := uniqueCopyTests[:0]
+	keep := uniqueCopyTests[:0:0]
+	skip := uniqueCopyTests[:0:0]
 
 	for _, tt := range uniqueCopyTests {
 		if tt.keep {
@@ -84,19 +84,19 @@ func TestUniqueCopy(t *testing.T) {
 
 	} else {
 		for _, tt := range skip {
-			t.Logf("%s/unkeep: %s", tt.line, tt.test)
+			t.Logf("%s/unkeep: %s", tt.line, tt.name)
 		}
 	}
 
 	for _, tt := range keep {
 		if tt.skip {
-			t.Logf("%s/skip: %s", tt.line, tt.test)
+			t.Logf("%s/skip: %s", tt.line, tt.name)
 			continue
 		}
 
 		tt := tt
 
-		t.Run(tt.line+"/"+tt.test, func(t *testing.T) {
+		t.Run(tt.line+"/"+tt.name, func(t *testing.T) {
 			t.Parallel()
 
 			n := stringslice.UniqueCopy(tt.dst, tt.src)
@@ -112,8 +112,8 @@ func TestUniqueCopy(t *testing.T) {
 func BenchmarkUniqueCopy(b *testing.B) {
 	b.ReportAllocs()
 
-	keep := uniqueCopyTests[:0]
-	skip := uniqueCopyTests[:0]
+	keep := uniqueCopyTests[:0:0]
+	skip := uniqueCopyTests[:0:0]
 	for _, tt := range uniqueCopyTests {
 		if tt.keep {
 			keep = append(keep, tt)
@@ -126,19 +126,21 @@ func BenchmarkUniqueCopy(b *testing.B) {
 		keep = uniqueCopyTests
 	} else {
 		for _, tt := range skip {
-			b.Logf("%s/unkeep: %s", tt.line, tt.test)
+			b.Logf("%s/unkeep: %s", tt.line, tt.name)
 		}
 	}
 
 	for _, tt := range keep {
 		if tt.skip {
-			b.Logf("%s/skip: %s", tt.line, tt.test)
+			b.Logf("%s/skip: %s", tt.line, tt.name)
 			continue
 		}
 
 		if !tt.bench {
 			continue
 		}
+
+		tt := tt
 
 		b.Run(tt.line, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
